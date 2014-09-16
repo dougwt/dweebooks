@@ -1,6 +1,8 @@
 #!/usr/bin/python
 """
-TODO: Add documentation
+A simple twitter bot that tweets at regular intervals and responds to mentions.
+
+Tweets are generated using markov chains based on previous tweets.
 """
 import datetime
 import glob
@@ -14,7 +16,7 @@ import tweepy
 
 
 class Dweebooks:
-    """TODO: One liner description."""
+    """Twitter bot that tweets at regular intervals & responds to mentions."""
     def __init__(self, files):
         self.EOS = ['.', '?', '!']
         self.delay = 60 * 60
@@ -30,6 +32,9 @@ class Dweebooks:
         CONSUMER_SECRET = 'Yl4RROho8rKT7Y1axBjDO8Ot2DR3FiBSUDVbOoWz8ydC5YsIna'
         ACCESS_TOKEN = '2647029398-y6m8U3jgPyRLq4xl4xq4GgWku4IeeFpFLwhM7e0'
         ACCESS_TOKEN_SECRET = '10nEzYXsMmCcMjPEpjuxlWetTGBDxcv2z6PrJHik4iRCW'
+        self.URL_TOKENS = True
+        self.USERNAME_TOKENS = False
+
         self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         self.auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
         self.username = self.auth.get_username()
@@ -95,15 +100,15 @@ class Dweebooks:
         self.log('Usable tweets: %s' % len(tokens))
         return tokens
 
-    def valid_token(self, token, urls=False, mentions=True):
+    def valid_token(self, token):
         """Determine whether a token should be placed in the dictionary."""
         # Filter urls
-        if urls and token.lower().startswith(u'http'):
+        if not self.URL_TOKENS and token.lower().startswith(u'http'):
             # self.log('Rejected token: %s' % token) TODO: debug log
             return False
 
         # Filter mentions
-        if mentions and u'@' in token:
+        if not self.USERNAME_TOKENS and u'@' in token:
             # self.log('Rejected token: %s' % token) TODO: debug log
             return False
 
@@ -171,6 +176,8 @@ class Dweebooks:
         if status.user.screen_name == self.username:
             return True
 
+        self.log('Stream detected mention: ' + status.text)
+
         # prefix response with mention's username
         new_tweet = '@%s ' % status.user.screen_name
 
@@ -218,7 +225,6 @@ class MentionListener(tweepy.StreamListener):
         self.bot = bot
 
     def on_status(self, status):
-        self.bot.log('Stream detected tweet: ' + status.text)
         self.bot.process_mention(status)
 
         return True  # To continue listening
