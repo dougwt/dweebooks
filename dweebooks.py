@@ -5,9 +5,9 @@ TODO: Add documentation
 import datetime
 import glob
 import json
+import logging
 import sys
 import time
-import logging
 from random import choice
 
 import tweepy
