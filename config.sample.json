@@ -1,0 +1,8 @@
+{
+    "CONSUMER_SECRET"       : "",
+    "CONSUMER_KEY"          : "",
+    "ACCESS_TOKEN"          : "",
+    "ACCESS_TOKEN_SECRET"   : "",
+    "URL_TOKENS"            : true,
+    "USERNAME_TOKENS"       : false
+}

@@ -27,13 +27,18 @@ class Dweebooks:
         self.load_data(files)
         self.build_dict()
 
-        # TODO: add support for config files
-        CONSUMER_KEY = 'JBBZYreWlks6WaUGGu46JNpnP'
-        CONSUMER_SECRET = 'Yl4RROho8rKT7Y1axBjDO8Ot2DR3FiBSUDVbOoWz8ydC5YsIna'
-        ACCESS_TOKEN = '2647029398-y6m8U3jgPyRLq4xl4xq4GgWku4IeeFpFLwhM7e0'
-        ACCESS_TOKEN_SECRET = '10nEzYXsMmCcMjPEpjuxlWetTGBDxcv2z6PrJHik4iRCW'
-        self.URL_TOKENS = True
-        self.USERNAME_TOKENS = False
+        # Load settings from config.json
+        try:
+            config = json.load(open('config.json'))
+            CONSUMER_KEY = config.CONSUMER_KEY
+            CONSUMER_SECRET = config.CONSUMER_SECRET
+            ACCESS_TOKEN = config.ACCESS_TOKEN
+            ACCESS_TOKEN_SECRET = config.ACCESS_TOKEN_SECRET
+            self.URL_TOKENS = config.URL_TOKENS
+            self.USERNAME_TOKENS = config.USERNAME_TOKENS
+        except:
+            # TODO: handle file issues and missing settings
+            pass
 
         self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         self.auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
