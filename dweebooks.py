@@ -19,7 +19,6 @@ class Dweebooks:
     """Twitter bot that tweets at regular intervals & responds to mentions."""
     def __init__(self, files):
         self.EOS = ['.', '?', '!']
-        self.delay = 60 * 60
         self.most_recent_response_id = None
 
         # Load settings from config.json
@@ -29,6 +28,8 @@ class Dweebooks:
             CONSUMER_SECRET = config['CONSUMER_SECRET']
             ACCESS_TOKEN = config['ACCESS_TOKEN']
             ACCESS_TOKEN_SECRET = config['ACCESS_TOKEN_SECRET']
+            self.ARCHIVE_PATH = config['ARCHIVE_PATH']
+            self.DELAY = 60 * config['DELAY']
             self.URL_TOKENS = config['URL_TOKENS']
             self.USERNAME_TOKENS = config['USERNAME_TOKENS']
         except:
@@ -214,7 +215,7 @@ class Dweebooks:
             self.api.update_status(new_tweet)      # publish tweet
             self.log('Tweeting: %s' % new_tweet)   # update log
 
-            time.sleep(self.delay)                 # sleep until next tweet
+            time.sleep(self.DELAY)                 # sleep until next tweet
 
     def log(self, msg):
         """Write a message to the dweebooks log."""
@@ -254,7 +255,7 @@ class MentionListener(tweepy.StreamListener):
 
 
 def main():
-    bot = Dweebooks('./data/js/tweets/*.js')
+    bot = Dweebooks()
     bot.start()
 
 

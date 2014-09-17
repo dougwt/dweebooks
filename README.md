@@ -10,9 +10,10 @@ A simple twitter bot that tweets at regular intervals and responds to mentions. 
 
 1. Replace the `data` subdirectory with the contents of your Twitter archive, which may be downloaded from the [Twitter settings](https://twitter.com/settings/account) page.
 2. Create a `config.json` file containing your Twitter API keys.
-3. Run dweebooks.py
+3. Run `dweebooks.py`
 
 ## Configuration
+
 Before dweebooks can connect to twitter successfully, some configuration values must be set in `config.json`. A [sample configuration](config.sample.json) is provided for your convenience. 
 
 ### config.sample.json
@@ -46,20 +47,30 @@ This should be the string listed as `Access token` under Your access tokens on t
 
 This should be the string listed as `Access token secret` under Your access tokens on the API Keys tab of the Twitter Apps website.
 
-### Configuration Options
+### Options
 
 The following configuration options are also specified within the configuration file:
+
+##### ARCHIVE_PATH
+
+The path to scan for JSON files extracted from your [Twitter Archive](## Instructions).
+
+*Recommended:* `./data/js/tweets/*.js`
+
+##### DELAY
+
+The number of minutes to wait between tweets (excluding replies).
 
 ##### URL_TOKENS
 
 This boolean option controls whether or not previously tweeted URLs contained within the scanned archive should be included when generating new tweets.
 
-- *true* : include URLs
-- *false* : don't include URLs
+- `true`: include URLs
+- `false`: don't include URLs
 
 ##### USERNAME_TOKENS
 
 This boolean option controls whether or not previously tweeted usernames contained within the scanned archive should be included when generating new tweets.
 
-- *true* : include usernames
-- *false* : don't include usernames
+- `true`: include usernames
+- `false`: don't include usernames
