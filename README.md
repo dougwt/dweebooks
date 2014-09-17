@@ -23,6 +23,8 @@ Before dweebooks can connect to twitter successfully, some configuration values 
         "CONSUMER_SECRET"       : "",
         "ACCESS_TOKEN"          : "",
         "ACCESS_TOKEN_SECRET"   : "",
+        "ARCHIVE_PATH"          : "./data/js/tweets/*.js",
+        "DELAY"                 : 60,
         "URL_TOKENS"            : true,
         "USERNAME_TOKENS"       : false
     }
