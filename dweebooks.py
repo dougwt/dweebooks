@@ -21,24 +21,25 @@ class Dweebooks:
         self.EOS = ['.', '?', '!']
         self.delay = 60 * 60
         self.most_recent_response_id = None
+
+        # Load settings from config.json
+        try:
+            config = json.load(open('config.json'))
+            CONSUMER_KEY = config['CONSUMER_KEY']
+            CONSUMER_SECRET = config['CONSUMER_SECRET']
+            ACCESS_TOKEN = config['ACCESS_TOKEN']
+            ACCESS_TOKEN_SECRET = config['ACCESS_TOKEN_SECRET']
+            self.URL_TOKENS = config['URL_TOKENS']
+            self.USERNAME_TOKENS = config['USERNAME_TOKENS']
+        except:
+            # TODO: handle file issues and missing settings
+            pass
+
         self.tweets = {}
         self.dictionary = {}
         self.seeds = []
         self.load_data(files)
         self.build_dict()
-
-        # Load settings from config.json
-        try:
-            config = json.load(open('config.json'))
-            CONSUMER_KEY = config.CONSUMER_KEY
-            CONSUMER_SECRET = config.CONSUMER_SECRET
-            ACCESS_TOKEN = config.ACCESS_TOKEN
-            ACCESS_TOKEN_SECRET = config.ACCESS_TOKEN_SECRET
-            self.URL_TOKENS = config.URL_TOKENS
-            self.USERNAME_TOKENS = config.USERNAME_TOKENS
-        except:
-            # TODO: handle file issues and missing settings
-            pass
 
         self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         self.auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -152,6 +153,7 @@ class Dweebooks:
 
         # Add the chosen key and its successor to the string
         first, second = key
+        li = []
         li.append(first)
         li.append(second)
 
