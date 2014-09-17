@@ -1,27 +1,20 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
-
-- [dweebooks](#dweebooks)
-  - [Requirements](#requirements)
-  - [Instructions](#instructions)
-  - [Configuration](#configuration)
-    - [config.sample.json](#configsamplejson)
-    - [API Keys](#api-keys)
-        - [CONSUMER_SECRET](#consumer_secret)
-        - [CONSUMER_KEY](#consumer_key)
-        - [ACCESS_TOKEN](#access_token)
-        - [ACCESS\_TOKEN_SECRET](#access\_token_secret)
-    - [Options](#options)
-        - [ARCHIVE_PATH](#archive_path)
-        - [DELAY](#delay)
-        - [URL_TOKENS](#url_tokens)
-        - [USERNAME_TOKENS](#username_tokens)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # dweebooks
 A simple twitter bot that tweets at regular intervals and responds to mentions. All tweets are pseudorandom text based on Markov chains of archived tweets.
+
+- [Requirements](#requirements)
+- [Instructions](#instructions)
+- [Configuration](#configuration)
+- [config.sample.json](#configsamplejson)
+- [API Keys](#api-keys)
+    - [CONSUMER_SECRET](#consumer_secret)
+    - [CONSUMER_KEY](#consumer_key)
+    - [ACCESS_TOKEN](#access_token)
+    - [ACCESS\_TOKEN_SECRET](#access\_token_secret)
+- [Options](#options)
+    - [ARCHIVE_PATH](#archive_path)
+    - [DELAY](#delay)
+    - [URL_TOKENS](#url_tokens)
+    - [USERNAME_TOKENS](#username_tokens)
 
 ## Requirements
 
