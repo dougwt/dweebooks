@@ -17,7 +17,7 @@ import tweepy
 
 class Dweebooks:
     """Twitter bot that tweets at regular intervals & responds to mentions."""
-    def __init__(self, files):
+    def __init__(self):
         self.EOS = ['.', '?', '!']
         self.most_recent_response_id = None
 
@@ -39,7 +39,7 @@ class Dweebooks:
         self.tweets = {}
         self.dictionary = {}
         self.seeds = []
-        self.load_data(files)
+        self.load_data(self.ARCHIVE_PATH)
         self.build_dict()
 
         self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
