@@ -13,7 +13,7 @@ A simple twitter bot that tweets at regular intervals and responds to mentions. 
 3. Run dweebooks.py
 
 ## Configuration
-Before dweebot can connect to twitter successfully, some configuration values must be set in `config.json`. A [sample configuration](config.sample.json) is provided for your convenience. 
+Before dweebooks can connect to twitter successfully, some configuration values must be set in `config.json`. A [sample configuration](config.sample.json) is provided for your convenience. 
 
 ### config.sample.json
 
