@@ -95,4 +95,4 @@ This boolean option controls whether or not previously tweeted usernames contain
 
 ## Demo
 
-A live demo of dweebot can be interacted with on twitter at [@dougwt_ebooks](https://twitter.com/dougwt_ebooks).
+A live demo of dweebooks can be interacted with on twitter at [@dougwt_ebooks](https://twitter.com/dougwt_ebooks).
