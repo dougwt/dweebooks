@@ -2,7 +2,7 @@
 A simple twitter bot that tweets at regular intervals and responds to mentions. All tweets are pseudorandom text based on Markov chains of archived tweets.
 
 - [Requirements](#requirements)
-- [Instructions](#instructions)
+- [Setup](#setup)
 - [Configuration](#configuration)
     - [config.sample.json](#configsamplejson)
     - [API Keys](#api-keys)
@@ -15,13 +15,14 @@ A simple twitter bot that tweets at regular intervals and responds to mentions. 
         - [DELAY](#delay)
         - [URL_TOKENS](#url_tokens)
         - [USERNAME_TOKENS](#username_tokens)
+- [Demo](#demo)
 
 ## Requirements
 
 * Python 2.x
 * [tweepy](http://www.tweepy.org), the easy-to-use Python library for accessing the Twitter API
 
-## Instructions
+## Setup
 
 1. Replace the `data` subdirectory with the contents of your Twitter archive, which may be downloaded from the [Twitter settings](https://twitter.com/settings/account) page.
 2. Create a `config.json` file containing your Twitter API keys.
@@ -91,3 +92,7 @@ This boolean option controls whether or not previously tweeted usernames contain
 
 - `true`: include usernames
 - `false`: don't include usernames
+
+## Demo
+
+A live demo of dweebot can be interacted with on twitter at [@dougwt_ebooks](https://twitter.com/dougwt_ebooks).
