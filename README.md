@@ -3,8 +3,14 @@ A simple twitter bot that tweets at regular intervals and responds to mentions. 
 
 ## Requirements
 
-* Python 2.X
-* [tweepy](http://www.tweepy.org)
+* Python 2.x
+* [tweepy](http://www.tweepy.org), the easy-to-use Python library for accessing the Twitter API
+
+## Instructions
+
+1. Replace the `data` subdirectory with the contents of your Twitter archive, which may be downloaded from the [Twitter settings](https://twitter.com/settings/account) page.
+2. Create a `config.json` file containing your Twitter API keys.
+3. Run dweebooks.py
 
 ## Configuration
 Before dweebot can connect to twitter successfully, some configuration values must be set in `config.json`. A [sample configuration](config.sample.json) is provided for your convenience. 
