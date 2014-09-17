@@ -222,7 +222,10 @@ class Dweebooks:
         timestamp = datetime.datetime.fromtimestamp(
             time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
-        print u'[%s] %s' % (timestamp, msg)
+        try:
+            print u'[%s] %s' % (timestamp, msg)
+        except UnicodeEncodeError:
+            print u'Prevented crash from error printing unicode msg!'
         sys.stdout.flush()
 
 
