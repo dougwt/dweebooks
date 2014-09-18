@@ -183,6 +183,8 @@ class Dweebooks:
         if status.user.screen_name == self.username:
             return True
 
+        # TODO: Check for retweets
+
         self.log('Stream detected mention: ' + status.text)
 
         # prefix response with mention's username
@@ -190,7 +192,9 @@ class Dweebooks:
 
         # add any additional usernames mentioned in the tweet
         for user in status.entities['user_mentions']:
-            if user['screen_name'] != self.username:  # don't include ourselves
+            # don't include ourselves or duplicates of the original author
+            if user['screen_name'] != self.username and \
+               user['screen_name'] != status.user.screen_name:
                 new_tweet += '@%s ' % user['screen_name']
 
         # generate the response text
