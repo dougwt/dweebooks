@@ -123,12 +123,12 @@ class Dweebooks:
 
     def strip_token(self, token):
         """Remove unwanted characters from an individual token."""
-        if token.startswith(u'"') or token.startswith(u"'") or token.startswith(u'('):
-            # self.log('Stripped token: %s' % token)
+        if any([token.startswith(x) for x in [u'"', u"'", u'(']]):
             token = token[1:]
-        if token.endswith(u'"') or token.endswith(u"'") or token.endswith(u')'):
-            # self.log('Stripped token: %s' % token)
+
+        if any([token.startswith(x) for x in [u'"', u"'", u')']]):
             token = token[:-1]
+
         return token
 
     def generate_tweet(self, max_length=140):
