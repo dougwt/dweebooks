@@ -111,22 +111,20 @@ class Dweebooks:
         """Determine whether a token should be placed in the dictionary."""
         # Filter urls
         if not self.URL_TOKENS and token.lower().startswith(u'http'):
-            # self.log('Rejected token: %s' % token) TODO: debug log
             return False
 
         # Filter mentions
         if not self.USERNAME_TOKENS and u'@' in token:
-            # self.log('Rejected token: %s' % token) TODO: debug log
             return False
 
         return True
 
     def strip_token(self, token):
         """Remove unwanted characters from an individual token."""
-        if any([token.startswith(x) for x in [u'"', u"'", u'(']]):
+        if any([token.startswith(x) for x in [u'"', u"'", u'(', u' ']]):
             token = token[1:]
 
-        if any([token.startswith(x) for x in [u'"', u"'", u')']]):
+        if any([token.startswith(x) for x in [u'"', u"'", u')', u' ']]):
             token = token[:-1]
 
         return token
