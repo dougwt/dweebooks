@@ -198,8 +198,8 @@ class Dweebooks:
         new_tweet += self.generate_tweet(max_length=(140 - len(new_tweet)))
 
         # make it happen, cap'n
-        self.api.update_status(new_tweet, status.id)
-        self.log('Tweeting: %s' % new_tweet)
+        self.api.update_status(new_tweet, status.id)    # publish reply tweet
+        self.log('Tweeting: %s' % new_tweet)            # update log
 
     def start(self):
         """Start dweebooks bot."""
@@ -212,7 +212,7 @@ class Dweebooks:
 
         while True:
             new_tweet = self.generate_tweet()      # generate tweet text
-            self.api.update_status(new_tweet)      # publish tweet
+            self.api.update_status(new_tweet)      # publish scheduled tweet
             self.log('Tweeting: %s' % new_tweet)   # update log
 
             time.sleep(self.DELAY)                 # sleep until next tweet
