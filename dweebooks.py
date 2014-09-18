@@ -84,7 +84,7 @@ class Dweebooks:
                 self.dictionary[key].append(third)
 
     def list_tokens_by_tweet(self):
-        """Returns a nested list of tokens making up each tweet."""
+        """Return a nested list of tokens making up each tweet."""
         tokens = []
         for tweet in self.tweets:
             # if len(tweet[u'entities'][u'user_mentions']) == 0:
@@ -230,30 +230,26 @@ class Dweebooks:
 
 
 class MentionListener(tweepy.StreamListener):
-    ''' Handles data received from the stream. '''
+    """ Handle data received from the stream. """
     def __init__(self, bot, *args, **kwargs):
         super(MentionListener, self).__init__(*args, **kwargs)
         self.bot = bot
 
     def on_status(self, status):
         self.bot.process_mention(status)
-
         return True  # To continue listening
 
     def on_error(self, status_code):
         self.bot.log('Got an error with status code: ' + str(status_code))
-
         return True  # To continue listening
 
     def on_timeout(self):
         self.bot.log('Timeout...')
-
         return True  # To continue listening
 
     def on_friends(self, friends):
         self.bot.log('Received friends list.')
         self.bot.friends = friends
-
         return True  # To continue listening
 
 
