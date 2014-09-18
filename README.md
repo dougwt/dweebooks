@@ -79,6 +79,13 @@ The path to scan for JSON files extracted from your [Twitter Archive](## Instruc
 
 The number of minutes to wait between tweets (excluding replies).
 
+##### REPLY_TO_RETWEETS
+
+This boolean option controls whether or not the bot responds to retweets.
+
+- `true`: respond
+- `false`: don't respond
+
 ##### URL_TOKENS
 
 This boolean option controls whether or not previously tweeted URLs contained within the scanned archive should be included when generating new tweets.

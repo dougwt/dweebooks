@@ -32,6 +32,7 @@ class Dweebooks:
             self.DELAY = 60 * config['DELAY']
             self.URL_TOKENS = config['URL_TOKENS']
             self.USERNAME_TOKENS = config['USERNAME_TOKENS']
+            self.REPLY_TO_RETWEETS = config['REPLY_TO_RETWEETS']
         except:
             # TODO: handle file issues and missing settings
             pass
