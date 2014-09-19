@@ -36,12 +36,14 @@ class Dweebooks:
             # TODO: handle file issues and missing settings
             pass
 
-        self.tweets = {}
-        self.dictionary = {}
-        self.seeds = []
-        self.load_data(self.ARCHIVE_PATH)
-        self.build_dict()
+        # Generate dictionary from archived tweets
+        self.archived_tweets = {}               # tweets found in archives
+        self.markov = {}                        # markov dictionary
+        self.seeds = []                         # starting words
+        self._load_archive(self.ARCHIVE_PATH)
+        self._build_dict()
 
+        # Twitter API Authentication
         self.auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         self.auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
         self.username = self.auth.get_username()
@@ -49,9 +51,9 @@ class Dweebooks:
         self.listener = None
         self.stream = None
 
-        self.log('Available seeds: %s' % len(self.seeds))
+        self._log('Available seeds: %s' % len(self.seeds))
 
-    def load_data(self, files):
+    def _load_archive(self, files):
         """Load JSON data from tweet archives."""
         tweets = []
         files = glob.glob(files)
@@ -62,12 +64,12 @@ class Dweebooks:
                 j = json.loads(d)
             for tweet in j:
                 tweets.append(tweet)
-        self.tweets = sorted(tweets, key=lambda k: k['id'])
-        self.log('Found tweets: %s' % len(self.tweets))
+        self.archived_tweets = sorted(tweets, key=lambda k: k['id'])
+        self._log('Found tweets: %s' % len(self.archived_tweets))
 
-    def build_dict(self):
+    def _build_dict(self):
         """Build a Markov chain based on a list of tokens."""
-        tweet_tokens = self.list_tokens_by_tweet()
+        tweet_tokens = self._list_tokens_by_tweet()
         for tweet in tweet_tokens:
             for i, token in enumerate(tweet):
                 try:
@@ -76,36 +78,36 @@ class Dweebooks:
                     break
 
                 key = (first, second)
-                if key not in self.dictionary:
-                    self.dictionary[key] = []
+                if key not in self.markov:
+                    self.markov[key] = []
 
-                self.dictionary[key].append(third)
+                self.markov[key].append(third)
 
-    def list_tokens_by_tweet(self):
+    def _list_tokens_by_tweet(self):
         """Return a nested list of tokens making up each tweet."""
         tokens = []
-        for tweet in self.tweets:
+        for tweet in self.archived_tweets:
             # if len(tweet[u'entities'][u'user_mentions']) == 0:
             temp_tokens = []
             for token in tweet[u'text'].split(' '):
-                if self.valid_token(token):
-                    temp_tokens.append(self.strip_token(token))
+                if self._is_valid_token(token):
+                    temp_tokens.append(self._strip_token(token))
 
             tokens.append(temp_tokens)
 
             try:
                 first, second = temp_tokens[0], temp_tokens[1]
                 self.seeds.append((first, second))
-                # self.log('Adding seed: (%s, %s)' % (first, second))
+                # self._log('Adding seed: (%s, %s)' % (first, second))
             except IndexError:
-                # self.log('Error analyzing seed: %s' % temp_tokens)
+                # self._log('Error analyzing seed: %s' % temp_tokens)
                 pass
 
-            # self.log('Adding tokens: %s' % temp_tokens)
-        self.log('Usable tweets: %s' % len(tokens))
+            # self._log('Adding tokens: %s' % temp_tokens)
+        self._log('Usable tweets: %s' % len(tokens))
         return tokens
 
-    def valid_token(self, token):
+    def _is_valid_token(self, token):
         """Determine whether a token should be placed in the dictionary."""
         # Filter urls
         if not self.URL_TOKENS and token.lower().startswith(u'http'):
@@ -117,7 +119,7 @@ class Dweebooks:
 
         return True
 
-    def strip_token(self, token):
+    def _strip_token(self, token):
         """Remove unwanted characters from an individual token."""
         if any([token.startswith(x) for x in [u'"', u"'", u'(', u' ']]):
             token = token[1:]
@@ -127,25 +129,25 @@ class Dweebooks:
 
         return token
 
-    def generate_tweet(self, max_length=140):
+    def _generate_tweet(self, max_length=140):
         """Generate pseudorandom tweets with a maximum length."""
         new_tweet = ''
         while True:
             if len(new_tweet) < 25:            # tweet too short; extend it
                 if len(new_tweet) > 0:
                     new_tweet += ' '  # add space prefix for next substring
-                new_tweet += self.generate_markov_string()
+                new_tweet += self._generate_markov_string()
             elif len(new_tweet) > max_length:  # tweet too long; start over
 
-                new_tweet = self.generate_markov_string()
+                new_tweet = self._generate_markov_string()
             else:                              # acceptable-length tweet found
                 break
         return new_tweet
 
-    def generate_markov_string(self):
+    def _generate_markov_string(self):
         """Generate a string based on the markov dictionary."""
         # Choose a random key to start the chain
-        li = [key for key in self.dictionary.keys()]
+        li = [key for key in self.markov.keys()]
         key = choice(li)
 
         # Add the chosen key and its successor to the string
@@ -157,7 +159,7 @@ class Dweebooks:
         while True:
             # lookup current key in dictionary
             try:
-                third = choice(self.dictionary[key])
+                third = choice(self.markov[key])
             except KeyError:
                 # no successor found
                 # we've reached the end of this markov chain
@@ -174,7 +176,7 @@ class Dweebooks:
 
         return ' '.join(li)
 
-    def process_mention(self, status):
+    def _process_mention(self, status):
         """Reply to a mention status."""
         # don't respond to tweets made by our own account
         if status.user.screen_name == self.username:
@@ -182,7 +184,7 @@ class Dweebooks:
 
         # TODO: Check for retweets
 
-        self.log('Stream detected mention: ' + status.text)
+        self._log('Stream detected mention: ' + status.text)
 
         # prefix response with mention's username
         new_tweet = '@%s ' % status.user.screen_name
@@ -195,15 +197,15 @@ class Dweebooks:
                 new_tweet += '@%s ' % user['screen_name']
 
         # generate the response text
-        new_tweet += self.generate_tweet(max_length=(140 - len(new_tweet)))
+        new_tweet += self._generate_tweet(max_length=(140 - len(new_tweet)))
 
         # make it happen, cap'n
         self.api.update_status(new_tweet, status.id)    # publish reply tweet
-        self.log('Tweeting: %s' % new_tweet)            # update log
+        self._log('Tweeting: %s' % new_tweet)            # update log
 
     def start(self):
         """Start dweebooks bot."""
-        self.log('Starting dweebooks...')
+        self._log('Starting dweebooks...')
 
         # Setup async StreamListener to monitor mentions
         self.listener = MentionListener(self)
@@ -211,13 +213,13 @@ class Dweebooks:
         self.stream.userstream(_with='user', replies='all', async=True)
 
         while True:
-            new_tweet = self.generate_tweet()      # generate tweet text
+            new_tweet = self._generate_tweet()      # generate tweet text
             self.api.update_status(new_tweet)      # publish scheduled tweet
-            self.log('Tweeting: %s' % new_tweet)   # update log
+            self._log('Tweeting: %s' % new_tweet)   # update log
 
             time.sleep(self.DELAY)                 # sleep until next tweet
 
-    def log(self, msg):
+    def _log(self, msg):
         """Write a message to the dweebooks log."""
         timestamp = datetime.datetime.fromtimestamp(
             time.time()).strftime('%Y-%m-%d %H:%M:%S')
