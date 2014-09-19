@@ -7,7 +7,6 @@ Tweets are generated using markov chains based on previous tweets.
 import datetime
 import glob
 import json
-import logging
 import sys
 import time
 from random import choice
@@ -49,8 +48,6 @@ class Dweebooks:
         self.api = tweepy.API(self.auth)
         self.listener = None
         self.stream = None
-
-        logging.basicConfig(filename=self.username+'.log', level=logging.DEBUG)
 
         self.log('Available seeds: %s' % len(self.seeds))
 
