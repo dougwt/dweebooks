@@ -243,7 +243,6 @@ class MentionListener(tweepy.StreamListener):
         return True  # To continue listening
 
     def on_friends(self, friends):
-        print "on_friends"
         self.bot._log('Received friends list.')
         self.bot.friends = friends
         return True  # To continue listening
