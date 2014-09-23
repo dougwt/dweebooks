@@ -4,6 +4,7 @@
     "ACCESS_TOKEN"          : "",
     "ACCESS_TOKEN_SECRET"   : "",
     "ARCHIVE_PATH"          : "./data/js/tweets/*.js",
+    "DEBUG"                 : false,
     "DELAY"                 : 60,
     "REPLY_TO_RETWEETS"     : true,
     "URL_TOKENS"            : true,
