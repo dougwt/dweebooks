@@ -231,19 +231,20 @@ class MentionListener(tweepy.StreamListener):
         self.bot = bot
 
     def on_status(self, status):
-        self.bot.process_mention(status)
+        self.bot._process_mention(status)
         return True  # To continue listening
 
     def on_error(self, status_code):
-        self.bot.log('Got an error with status code: ' + str(status_code))
+        self.bot._log('Got an error with status code: ' + str(status_code))
         return True  # To continue listening
 
     def on_timeout(self):
-        self.bot.log('Timeout...')
+        self.bot._log('Timeout...')
         return True  # To continue listening
 
     def on_friends(self, friends):
-        self.bot.log('Received friends list.')
+        print "on_friends"
+        self.bot._log('Received friends list.')
         self.bot.friends = friends
         return True  # To continue listening
 
