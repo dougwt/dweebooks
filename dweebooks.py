@@ -7,16 +7,20 @@ Tweets are generated using markov chains based on previous tweets.
 import datetime
 import glob
 import json
+import os
 import sys
 import time
 from random import choice
+from threading import Thread
 
 import tweepy
+from daemon import runner
 
 
 class Dweebooks:
     """Twitter bot that tweets at regular intervals & responds to mentions."""
     def __init__(self):
+        """Initalize bot variables."""
         self.EOS = [u'.', u'?', u'!']
         self.most_recent_response_id = None
 
@@ -201,7 +205,7 @@ class Dweebooks:
 
         # Setup async StreamListener to monitor mentions
         self.listener = MentionListener(self)
-        self.stream = tweepy.Stream(self.auth, self.listener)
+        self.stream = DaemonStream(self.auth, self.listener)
         self.stream.userstream(_with='user', replies='all', async=True)
 
         while True:
@@ -224,33 +228,122 @@ class Dweebooks:
         sys.stdout.flush()
 
 
+# Custom Tweepy Classes
+
+
 class MentionListener(tweepy.StreamListener):
-    """ Handle data received from the stream. """
+    """Handle data received from the stream."""
     def __init__(self, bot, *args, **kwargs):
+        """Remember the bot being used."""
         super(MentionListener, self).__init__(*args, **kwargs)
         self.bot = bot
 
     def on_status(self, status):
+        """Called when a status is received."""
         self.bot._process_mention(status)
         return True  # To continue listening
 
     def on_error(self, status_code):
+        """Called when an error is received."""
         self.bot._log('Got an error with status code: ' + str(status_code))
         return True  # To continue listening
 
     def on_timeout(self):
+        """Called when a timeout message is received."""
         self.bot._log('Timeout...')
         return True  # To continue listening
 
     def on_friends(self, friends):
+        """Called when a friends list is received."""
         self.bot._log('Received friends list.')
         self.bot.friends = friends
         return True  # To continue listening
 
+    # Temporarily override on_data to handle 'friends' data until production
+    # version of tweepy supports friend messages.
+    def on_data(self, raw_data):
+        """Called when raw data is received from connection.
+
+        Override this method if you wish to manually handle
+        the stream data. Return False to stop stream and close connection.
+        """
+        from tweepy.models import Status
+        data = json.loads(raw_data)
+
+        if 'in_reply_to_status_id' in data:
+            status = Status.parse(self.api, data)
+            if self.on_status(status) is False:
+                return False
+        elif 'delete' in data:
+            delete = data['delete']['status']
+            if self.on_delete(delete['id'], delete['user_id']) is False:
+                return False
+        elif 'event' in data:
+            status = Status.parse(self.api, data)
+            if self.on_event(status) is False:
+                return False
+        elif 'direct_message' in data:
+            status = Status.parse(self.api, data)
+            if self.on_direct_message(status) is False:
+                return False
+        elif 'friends' in data:
+            if self.on_friends(data['friends']) is False:
+                return False
+        elif 'limit' in data:
+            if self.on_limit(data['limit']['track']) is False:
+                return False
+        elif 'disconnect' in data:
+            if self.on_disconnect(data['disconnect']) is False:
+                return False
+        else:
+            self.bot._log("Unknown message type: " + str(raw_data))
+
+
+class DaemonStream(tweepy.Stream):
+    """Modified Stream to create daemon threads."""
+    def _start(self, async):
+        self.running = True
+        if async:
+            self._thread = Thread(target=self._run)
+            self._thread.daemon = True
+            self._thread.start()
+        else:
+            self._run()
+
+
+# Daemon Classes
+
+
+class App():
+    """Define parameters for dweebooks daemon runner."""
+    def __init__(self):
+        """Specify daemon working directory, streams, and file locations."""
+        self.working_directory = os.path.dirname(os.path.abspath(__file__))
+        self.stdin_path = '/dev/null'
+        self.stdout_path = 'dweebooks.log'
+        self.stderr_path = 'dweebooks.log'
+        self.pidfile_path = '%s/dweebooks.pid' % self.working_directory
+        self.pidfile_timeout = 5
+
+    def run(self):
+        """Start dweebooks once the daemon has been run."""
+        self.bot = Dweebooks()
+        self.bot.start()
+
+
+class WorkingDirDaemonRunner(runner.DaemonRunner):
+    """ Controller for a callable running in a separate background process."""
+    def __init__(self, app):
+        """Modified DaemonRunner to include support for working directories."""
+        super(WorkingDirDaemonRunner, self).__init__(app)
+        self.daemon_context.working_directory = app.working_directory
+
 
 def main():
-    bot = Dweebooks()
-    bot.start()
+    """Forward all execution calls to the dweebooks daemon_runner."""
+    app = App()
+    daemon_runner = WorkingDirDaemonRunner(app)
+    daemon_runner.do_action()
 
 
 if __name__ == "__main__":
