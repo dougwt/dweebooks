@@ -12,6 +12,7 @@ A simple twitter bot that tweets at regular intervals and responds to mentions. 
         - [ACCESS\_TOKEN_SECRET](#access\_token_secret)
     - [Options](#options)
         - [ARCHIVE_PATH](#archive_path)
+        - [DEBUG](#debug)
         - [DELAY](#delay)
         - [URL_TOKENS](#url_tokens)
         - [USERNAME_TOKENS](#username_tokens)
