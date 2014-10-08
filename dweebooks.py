@@ -320,8 +320,8 @@ class App():
         """Specify daemon working directory, streams, and file locations."""
         self.working_directory = os.path.dirname(os.path.abspath(__file__))
         self.stdin_path = '/dev/null'
-        self.stdout_path = 'dweebooks.log'
-        self.stderr_path = 'dweebooks.log'
+        self.stdout_path = '%s/dweebooks.log' % self.working_directory
+        self.stderr_path = '%s/dweebooks.log' % self.working_directory
         self.pidfile_path = '%s/dweebooks.pid' % self.working_directory
         self.pidfile_timeout = 5
 
