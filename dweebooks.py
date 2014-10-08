@@ -177,7 +177,9 @@ class Dweebooks:
         if status.user.screen_name == self.username:
             return True
 
-        # TODO: Check for retweets
+        # don't respond to retweets depending on configuration
+        if not self.REPLY_TO_RETWEETS and 'retweeted_status' in status.entities:
+            return True
 
         self._log('Stream detected mention: ' + status.text)
 
@@ -214,7 +216,7 @@ class Dweebooks:
                 self.api.update_status(new_tweet)   # publish scheduled tweet
             self._log('Tweeting: %s' % new_tweet)   # update log
 
-            time.sleep(self.DELAY)                 # sleep until next tweet
+            time.sleep(self.DELAY)                  # sleep until next tweet
 
     def _log(self, msg):
         """Write a message to the dweebooks log."""
